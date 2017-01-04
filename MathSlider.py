@@ -20,10 +20,11 @@ t = 0.
 lastX = 0.
 lastT = 0.
 dt = .5
-dArray = deque([0.])
-tArray = deque([0.])
+dArrayPos = deque([0.])
+dArrayVel = deque([0.])
+dArrayAcc = deque([0.])
+tArray    = deque([0.])
 plotHeight = 30
-
 
 # Open figure window
 winXSize = 10
@@ -61,6 +62,22 @@ axSlider3.set_yticks([])
 posSlider = Slider(axSlider1, 'position',     -1., 1., valinit=0.)
 velSlider = Slider(axSlider2, 'velocity',     -1., 1., valinit=0.)
 accSlider = Slider(axSlider3, 'accel',        -1., 1., valinit=0.)
+
+#posSlider.poly.fill = False
+#velSlider.poly.fill = False
+#accSlider.poly.fill = False
+
+#posSlider.poly.set_edgecolor('red')
+#velSlider.poly.set_edgecolor('green')
+#accSlider.poly.set_edgecolor('blue')
+
+posSlider.poly.set_facecolor('red')
+velSlider.poly.set_facecolor('green')
+accSlider.poly.set_facecolor('blue')
+
+#posSlider.poly.set_linewidth(3)
+#velSlider.poly.set_linewidth(3)
+#accSlider.poly.set_linewidth(3)
 
 (pos, vel, acc) = (posSlider.val, velSlider.val, accSlider.val)
 
@@ -106,8 +123,12 @@ t = 0.
 dt = .1
 x = .1
 
-# Set up plot line in axes 2
-line, = axTime.plot(t, x, color='blue', linewidth=1, 
+# Set up plot lines in axes 2
+linePos, = axTime.plot(t, pos, color='red',   linewidth=1, 
+                 linestyle='-', alpha=1.0)  
+lineVel, = axTime.plot(t, vel, color='green', linewidth=1, 
+                 linestyle='-', alpha=1.0)  
+lineAcc, = axTime.plot(t, acc, color='blue',  linewidth=1, 
                  linestyle='-', alpha=1.0)  
 
 def animate(i):
@@ -138,14 +159,25 @@ def animate(i):
         posSlider.set_val(pos)
         lastPos, lastVel, lastAcc = pos, vel, acc
     t += dt
-    dArray.appendleft(pos)
-    if len(dArray) >= plotHeight/dt:
-        dArray.pop()
+    dArrayPos.appendleft(pos)
+    if len(dArrayPos) >= plotHeight/dt:
+        dArrayPos.pop()
+    
+    dArrayVel.appendleft(vel)
+    if len(dArrayVel) >= plotHeight/dt:
+        dArrayVel.pop()
+
+    dArrayAcc.appendleft(acc)
+    if len(dArrayAcc) >= plotHeight/dt:
+        dArrayAcc.pop()
+        
     tArray.appendleft(t)
     if len(tArray) >= plotHeight/dt:
         tArray.pop()
-    line.set_data(dArray, tArray)
-#    axTime.axis((t-plotHeight, t, 0., 1.))
+        
+    lineAcc.set_data(dArrayAcc, tArray)
+    lineVel.set_data(dArrayVel, tArray)
+    linePos.set_data(dArrayPos, tArray)
     axTime.axis((-1, 1., t, t-plotHeight))
     plt.pause(.001)
     
