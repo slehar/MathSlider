@@ -63,50 +63,34 @@ posSlider = Slider(axSlider1, 'position',     -1., 1., valinit=0.)
 velSlider = Slider(axSlider2, 'velocity',     -1., 1., valinit=0.)
 accSlider = Slider(axSlider3, 'accel',        -1., 1., valinit=0.)
 
-#posSlider.poly.fill = False
-#velSlider.poly.fill = False
-#accSlider.poly.fill = False
-
-#posSlider.poly.set_edgecolor('red')
-#velSlider.poly.set_edgecolor('green')
-#accSlider.poly.set_edgecolor('blue')
-
 posSlider.poly.set_facecolor('red')
 velSlider.poly.set_facecolor('green')
 accSlider.poly.set_facecolor('blue')
 
-#posSlider.poly.set_linewidth(3)
-#velSlider.poly.set_linewidth(3)
-#accSlider.poly.set_linewidth(3)
 
 (pos, vel, acc) = (posSlider.val, velSlider.val, accSlider.val)
-
-lastUpdated = None
-
-def updatePos(val):
-    global  lastUpdated
-    lastUpdated = posSlider
-
-def updateVel(val):
-    global lastUpdated
-    lastUpdated = velSlider
-
-def updateAcc(val):
-    global lastUpdated
-    lastUpdated = accSlider
-
-posSlider.on_changed(updatePos)
-velSlider.on_changed(updateVel)
-accSlider.on_changed(updateAcc)
 
 # Radio buttons to select Pos Vel Acc
 rax = plt.axes([0.01, .05, 0.1, 0.25])
 radio = RadioButtons(rax, ('Acc', 'Vel', 'Pos'), active=2)
-#radio.value_selected = 'Pos'
+#radio.circles[2].set_fc('red')
+#radio.circles[1].set_fc('green')
+#radio.circles[0].set_fc('blue')
 
-def radioFunc(label):
-    print 'Radio button = %s'%radio.value_selected
-radio.on_clicked(radioFunc)
+#def radioFunc(label):
+#    print 'Radio button = %s'%radio.value_selected
+#    selection = radio.value_selected
+#    if selection == 'pos':
+#        radio.activecolor = 'red'
+#        radio.circles[2].set_fc('red')
+#    elif selection == 'vel':
+#        radio.activecolor = 'green'
+#        radio.circles[1].set_fc('green')
+#    if selection == 'acc':
+#        radio.activecolor = 'blue'
+#        radio.circles[0].set_fc('blue')
+#        
+#radio.on_clicked(radioFunc)
 
 # Global
 time = 0.
@@ -120,7 +104,7 @@ axTime.set_ylim(0, 1)
 axTime.set_xlim(-1, 1)
 
 t = 0.
-dt = .1
+dt = .4
 x = .1
 
 # Set up plot lines in axes 2
@@ -138,18 +122,21 @@ def animate(i):
     if radio.value_selected == 'Pos':
         pos = posSlider.val
         lastPos, lastVel, lastAcc = pos, vel, acc
-        lastUpdated = None
+#        lastUpdated = None
     elif radio.value_selected == 'Vel':
         vel = velSlider.val
         pos += vel * delT
+        pos = np.clip(pos, -1., 1.)
         posSlider.set_val(pos)
         lastPos, lastVel, lastAcc = pos, vel, acc
-        lastUpdated = None
+#        lastUpdated = None
     elif radio.value_selected == 'Acc':
         acc = accSlider.val
         vel += acc
+        vel = np.clip(vel, -1., 1.)
         velSlider.set_val(vel)
         pos += vel * dt
+        pos = np.clip(pos, -1., 1.)
         posSlider.set_val(pos)
         lastPos, lastVel, lastAcc = pos, vel, acc
     t += dt
