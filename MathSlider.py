@@ -137,18 +137,12 @@ def animate(i):
 #    time += delT
     if radio.value_selected == 'Pos':
         pos = posSlider.val
-        vel = pos - lastPos
-        velSlider.set_val(vel)
-        acc = vel - lastVel
-        accSlider.set_val(acc)
         lastPos, lastVel, lastAcc = pos, vel, acc
         lastUpdated = None
     elif radio.value_selected == 'Vel':
         vel = velSlider.val
         pos += vel * delT
         posSlider.set_val(pos)
-        acc = vel - lastVel
-        accSlider.set_val(acc)
         lastPos, lastVel, lastAcc = pos, vel, acc
         lastUpdated = None
     elif radio.value_selected == 'Acc':
